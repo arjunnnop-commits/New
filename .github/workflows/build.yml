@@ -11,6 +11,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Find Gradle project folder
+        id: find
+        run: |
+          f=$(find . -name settings.gradle.kts -not -path './.git/*' | head -n 1)
+          if [ -z "$f" ]; then
+            echo "::error::settings.gradle.kts not found - upload the project files (app, gradle, settings.gradle.kts ...) to the repo"
+            exit 1
+          fi
+          echo "dir=$(dirname "$f")" >> "$GITHUB_OUTPUT"
+          echo "Project folder: $(dirname "$f")"
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -21,9 +32,10 @@ jobs:
           gradle-version: '8.7'
 
       - name: Build debug APK
+        working-directory: ${{ steps.find.outputs.dir }}
         run: gradle assembleDebug --stacktrace
 
       - uses: actions/upload-artifact@v4
         with:
           name: GlassFastboot-debug-apk
-          path: app/build/outputs/apk/debug/*.apk
+          path: ${{ steps.find.outputs.dir }}/app/build/outputs/apk/debug/*.apk
