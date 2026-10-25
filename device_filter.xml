@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Fastboot: class 0xFF, subclass 0x42, protocol 0x03 -->
+    <usb-device class="255" subclass="66" protocol="3" />
+    <!-- ADB (recovery sideload): protocol 0x01 -->
+    <usb-device class="255" subclass="66" protocol="1" />
+</resources>
